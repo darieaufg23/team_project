@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <style>
+        body.light-mode {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+        body.dark-mode {
+            background-color: #333;
+            color: #f2f2f2;
+        }
+        .button-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        .button-container a {
+            text-decoration: none;
+        }
+        .button-container button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button-container button.light-mode {
+            background-color: #007bff;
+        }
+        .button-container button.dark-mode {
+            background-color: #6c757d;
+        }
+        .button-container button:hover {
+            filter: brightness(90%);
+        }
+        h1 {
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+        li {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        li.dark-mode {
+            background-color: #444;
+            color: #f2f2f2;
+        }
+        img {
+            display: block;
+            margin: 10px auto;
+            max-width: 100%;
+            height: auto;
+        }
+        .rating-form {
+            margin-top: 10px;
+        }
+        .rating-form label {
+            color: #333;
+        }
+        .rating-form.dark-mode label {
+            color: #f2f2f2;
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <div class="button-container"> 
+        <a href="{% url 'login' %}"><button class="light-mode">Login</button></a>
+        <a href="{% url 'register' %}"><button class="light-mode">Register</button></a>
+        <button id="theme-toggle" class="light-mode">Dark Mode</button>
+    </div>
+    <h1>Products</h1>
+    <ul>
+        {% for product in products %}
+            <li class="light-mode">
+                <h2>{{ product.title }}</h2>
+                <p>Price: ${{ product.price }}</p>
+                <p>Comment: {{ product.comment }}</p>
+                <img src="/{{ product.photo }}" alt="{{ product.title }}">
+                <form class="rating-form" method="post" action="{% url 'add_rating' product.id %}">
+                    {% csrf_token %}
+                    <label for="rating">Rating:</label>
+                    <select id="rating" name="rating">
+                        {% for i in rating_range %}
+                            <option value="{{ i }}">{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="light-mode">Add Rating</button>
+                </form>
+                <p>Rating: {{ product.average_rating }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <script>
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+        });
+    </script>
+</body>
+</html>
